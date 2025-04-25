@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "937137485690",
+    "project_id": "yaumian-app",
+    "storage_bucket": "yaumian-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937137485690:android:457a6c7f0d80b82956c8c3",
+        "android_client_info": {
+          "package_name": "com.yaumian.yaumian_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937137485690-q54as0i273jahi54jheme6mas9jhkjtb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaObHVLfURnM1L7ZsEGVIv8HCKoVhYYnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937137485690-q54as0i273jahi54jheme6mas9jhkjtb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "937137485690-u9qs5tefjud8url2hett3rpm2a5qg3bm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.yaumian.yaumianApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
