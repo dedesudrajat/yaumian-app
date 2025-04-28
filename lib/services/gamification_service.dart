@@ -284,6 +284,7 @@ class GamificationService {
     );
 
     // Jika tidak ada lagi amalan yang diselesaikan hari ini, kurangi streak
+    // tapi jangan kurangi poin
     if (!stillHasCompletedToday && userStats.currentStreak > 0) {
       // Kurangi streak sebanyak 1
       userStats.currentStreak = userStats.currentStreak - 1;

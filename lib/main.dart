@@ -11,6 +11,7 @@ import 'package:yaumian_app/providers/locale_provider.dart';
 import 'package:yaumian_app/providers/notification_provider.dart';
 import 'package:yaumian_app/providers/theme_provider.dart';
 import 'package:yaumian_app/providers/quran_provider.dart';
+import 'package:yaumian_app/providers/prayer_time_provider.dart';
 import 'package:yaumian_app/screens/login_screen.dart';
 import 'package:yaumian_app/screens/main_screen.dart';
 import 'package:yaumian_app/services/database_service.dart';
@@ -43,6 +44,10 @@ void main() async {
   await NotificationService.initialize();
   await NotificationProvider.initialize();
 
+  // Inisialisasi waktu sholat
+  final prayerTimeProvider = PrayerTimeProvider();
+  await prayerTimeProvider.initialize();
+
   // Inisialisasi locale
   await LocaleProvider.initialize();
 
@@ -59,6 +64,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => GroupProvider()),
         ChangeNotifierProvider(create: (_) => QuranProvider()),
+        ChangeNotifierProvider(create: (_) => PrayerTimeProvider()),
       ],
       child: Consumer3<ThemeProvider, FirebaseProvider, LocaleProvider>(
         builder:
