@@ -229,7 +229,29 @@ class AmalanProvider with ChangeNotifier {
   }
 
   Future<void> updateAmalan(Amalan amalan) async {
+    // Simpan status sebelumnya
+    final wasCompleted = amalan.isCompleted;
+    final previousJumlahSelesai = amalan.jumlahSelesai;
+
+    // Update amalan di database
     await DatabaseService.updateAmalan(amalan);
+
+    // Jika status selesai berubah setelah edit, perbarui streak
+    // tapi tidak mengurangi poin
+    if (wasCompleted && !amalan.isCompleted) {
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      await GamificationService.decreaseStreakAndPoints(today);
+      await _loadUserStats();
+    }
+    // Jika amalan menjadi selesai setelah edit dan belum selesai sebelumnya
+    else if (!wasCompleted && amalan.isCompleted) {
+      await GamificationService.awardPointsForCompletion(amalan);
+      await _updateStreakAfterCompletion();
+      await _loadUserStats();
+      await _loadAchievements();
+    }
+
     _loadAmalanForSelectedDate();
   }
 
@@ -305,8 +327,18 @@ class AmalanProvider with ChangeNotifier {
   }
 
   Future<void> resetAmalanProgress(Amalan amalan) async {
+    // Simpan status sebelum reset
+    final wasCompleted = amalan.isCompleted;
+
+    // Reset progress amalan
     amalan.resetProgress();
     await DatabaseService.updateAmalan(amalan);
+
+    // Jika amalan sebelumnya sudah selesai, perbarui streak dan kurangi poin
+    if (wasCompleted) {
+      await _decreaseStreakAfterCancellation();
+    }
+
     _loadAmalanForSelectedDate();
   }
 

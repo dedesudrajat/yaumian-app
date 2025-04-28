@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yaumian_app/providers/prayer_time_provider.dart';
+import 'package:yaumian_app/screens/amalan_screen.dart';
 import 'package:yaumian_app/screens/home_screen.dart';
 import 'package:yaumian_app/screens/statistics_screen.dart';
 import 'package:yaumian_app/screens/profile_screen.dart';
@@ -16,8 +19,10 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const HomeScreen(),
-    const StatisticsScreen(),
+    ChangeNotifierProvider(
+      create: (_) => PrayerTimeProvider(),
+      child: HomeScreen(),
+    ),
     const GroupScreen(),
     const QuranScreen(),
     const ProfileScreen(),
@@ -35,11 +40,8 @@ class _MainScreenState extends State<MainScreen> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'Amalan'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Statistik',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
+
           BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Grup'),
           BottomNavigationBarItem(
             icon: Icon(Icons.menu_book),
