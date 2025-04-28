@@ -139,6 +139,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       final success = await firebaseProvider.signInWithGoogle();
 
+      print('Login success: $success');
+
       if (success && mounted) {
         // Navigasi ke halaman utama jika login berhasil
         Navigator.of(context).pushReplacement(
