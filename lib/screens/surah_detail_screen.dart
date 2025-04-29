@@ -272,125 +272,173 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
 
   Widget _buildPageView(SurahDetail surahDetail) {
     final totalPages = QuranPages.getTotalPages(widget.surah.number);
-    return Column(
+    return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () async {
-                  if (_currentPage > 0) {
-                    _pageController.previousPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  } else if (widget.surah.number > 1 &&
-                      _previousSurah != null) {
-                    // Jika di halaman pertama dan ada surah sebelumnya, pindah ke surah sebelumnya ke halaman terakhir
-                    final prevTotalPages = QuranPages.getTotalPages(
-                      widget.surah.number - 1,
-                    );
-                    _navigateToSurah(
-                      Surah(
-                        number: widget.surah.number - 1,
-                        name: _getSurahName(
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () async {
+                      if (_currentPage > 0) {
+                        _pageController.previousPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      } else if (widget.surah.number > 1 &&
+                          _previousSurah != null) {
+                        final prevTotalPages = QuranPages.getTotalPages(
                           widget.surah.number - 1,
-                        ), // Menggunakan fungsi untuk mendapatkan nama Arab
-                        englishName: _previousSurah!.englishName,
-                        englishNameTranslation:
-                            _previousSurah!.englishNameTranslation,
-                        numberOfAyahs: _previousSurah!.ayahs.length,
-                        revelationType: _previousSurah!.revelationType,
-                      ),
-                    );
-                    await Future.delayed(const Duration(milliseconds: 350));
-                    setState(() {
-                      _pageController = PageController(
-                        initialPage: prevTotalPages - 1,
-                      );
-                      _currentPage = prevTotalPages - 1;
-                    });
-                  }
+                        );
+                        _navigateToSurah(
+                          Surah(
+                            number: widget.surah.number - 1,
+                            name: _getSurahName(widget.surah.number - 1),
+                            englishName: _previousSurah!.englishName,
+                            englishNameTranslation:
+                                _previousSurah!.englishNameTranslation,
+                            numberOfAyahs: _previousSurah!.ayahs.length,
+                            revelationType: _previousSurah!.revelationType,
+                          ),
+                        );
+                        await Future.delayed(const Duration(milliseconds: 350));
+                        setState(() {
+                          _pageController = PageController(
+                            initialPage: prevTotalPages - 1,
+                          );
+                          _currentPage = prevTotalPages - 1;
+                        });
+                      }
+                    },
+                  ),
+                  Text(
+                    'Halaman ${_currentPage + 1}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios),
+                    onPressed: () async {
+                      if (_currentPage < totalPages - 1) {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      } else if (widget.surah.number < 114 &&
+                          _nextSurah != null) {
+                        _navigateToSurah(
+                          Surah(
+                            number: widget.surah.number + 1,
+                            name: _getSurahName(widget.surah.number + 1),
+                            englishName: _nextSurah!.englishName,
+                            englishNameTranslation:
+                                _nextSurah!.englishNameTranslation,
+                            numberOfAyahs: _nextSurah!.ayahs.length,
+                            revelationType: _nextSurah!.revelationType,
+                          ),
+                        );
+                        await Future.delayed(const Duration(milliseconds: 350));
+                        setState(() {
+                          _pageController = PageController(initialPage: 0);
+                          _currentPage = 0;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
                 },
-              ),
-              Text(
-                'Halaman ${_currentPage + 1}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              IconButton(
-                icon: const Icon(Icons.arrow_forward_ios),
-                onPressed: () async {
-                  if (_currentPage < totalPages - 1) {
-                    _pageController.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  } else if (widget.surah.number < 114 && _nextSurah != null) {
-                    // Jika di halaman terakhir dan ada surah berikutnya, pindah ke surah berikutnya ke halaman pertama
-                    _navigateToSurah(
-                      Surah(
-                        number: widget.surah.number + 1,
-                        name: _getSurahName(
-                          widget.surah.number + 1,
-                        ), // Menggunakan fungsi untuk mendapatkan nama Arab
-                        englishName: _nextSurah!.englishName,
-                        englishNameTranslation:
-                            _nextSurah!.englishNameTranslation,
-                        numberOfAyahs: _nextSurah!.ayahs.length,
-                        revelationType: _nextSurah!.revelationType,
-                      ),
-                    );
-                    await Future.delayed(const Duration(milliseconds: 350));
-                    setState(() {
-                      _pageController = PageController(initialPage: 0);
-                      _currentPage = 0;
-                    });
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
-            },
-            itemCount: totalPages,
-            itemBuilder: (context, index) {
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: _buildQuranText(
-                        _getPageContent(surahDetail, index),
-                      ),
+                itemCount: totalPages,
+                itemBuilder: (context, index) {
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: _buildQuranText(
+                            _getPageContent(surahDetail, index),
+                            surahDetail: surahDetail,
+                            ayat: index,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        Positioned(
+          bottom: 20,
+          left: MediaQuery.of(context).size.width / 3.6,
+          child: Container(
+            width: MediaQuery.of(context).size.width / 2,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(100)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    _isPlaying ? Icons.pause_circle : Icons.play_circle,
+                    size: 36,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onPressed: () async {
+                    if (_isPlaying) {
+                      await _currentAudioPlayer?.pause();
+                      setState(() {
+                        _isPlaying = false;
+                      });
+                    } else {
+                      final pageContent = _getPageContent(
+                        surahDetail,
+                        _currentPage,
+                      );
+                      final ayah = surahDetail.ayahs.firstWhere(
+                        (a) => pageContent.contains(a.text),
+                        orElse: () => surahDetail.ayahs.first,
+                      );
+                      await _playAyah(ayah);
+                    }
+                  },
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildQuranText(String text) {
+  Widget _buildQuranText(String text, {int? ayat, SurahDetail? surahDetail}) {
     if (text.isEmpty) return const SizedBox.shrink();
+    final startPage = QuranPages.getPageNumber(widget.surah.number, ayat ?? 0);
+    final ayahRange = QuranPages.getAyahRangeForPage(
+      widget.surah.number,
+      startPage,
+    );
 
     final tokens = Tajweed.applySimpleTajweed(text);
 
@@ -405,23 +453,45 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
           color: Colors.black,
         ),
         children: [
-          ...tokens.map(
-            (token) => TextSpan(
-              text: token.text,
-              style: TextStyle(
-                color:
-                    token.rule.type != TajweedType.none
-                        ? token.rule.color
-                        : Colors.black,
-                fontFamily: 'AmiriQuran',
-                fontSize: _arabicFontSize,
-                fontWeight:
-                    token.rule.type != TajweedType.none
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+          if (_isPerPageMode)
+            if (ayahRange != null)
+              for (int i = ayahRange['start']! - 1; i < ayahRange['end']!; i++)
+                if (surahDetail != null)
+                  if (i < surahDetail.ayahs.length)
+                    TextSpan(
+                      text:
+                          '${surahDetail.ayahs[i].text} ۝${_formatAyahNumber(surahDetail.ayahs[i].number)} ',
+                      style: TextStyle(
+                        color:
+                            _currentPlayingAyah != null &&
+                                    _currentPlayingAyah ==
+                                        surahDetail.ayahs[i].number
+                                ? Colors.blueAccent
+                                : Colors.black,
+                      ),
+                    ),
+          if (!_isPerPageMode)
+            ...tokens.map(
+              (token) => TextSpan(
+                text: token.text,
+                style: TextStyle(
+                  color:
+                      _currentPlayingAyah != null && _currentPlayingAyah == ayat
+                          ? Colors.blueAccent
+                          : token.rule.type != TajweedType.none
+                          ? token.rule.color
+                          : Colors.black,
+                  fontFamily: 'AmiriQuran',
+                  fontSize: _arabicFontSize,
+                  fontWeight:
+                      _currentPlayingAyah != null && _currentPlayingAyah == ayat
+                          ? FontWeight.bold
+                          : token.rule.type != TajweedType.none
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                ),
               ),
             ),
-          ),
           if (_isPerPageMode) ...[
             const TextSpan(text: ' '),
             TextSpan(
@@ -457,7 +527,6 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
         content.write('${ayah.text} ۝${_formatAyahNumber(ayah.number)} ');
       }
     }
-
     return content.toString();
   }
 
@@ -1447,15 +1516,6 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
         _searchQuery = ''; // Reset pencarian untuk menghindari blank screen
         _highlightedAyah = null; // Reset highlight sebelum fokus ke ayat baru
       });
-
-      // Pastikan scroll ke posisi awal jika perlu
-      if (_scrollController.hasClients && _scrollController.offset > 0) {
-        await _scrollController.animateTo(
-          _scrollController.position.minScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
 
       // Fokus ke ayat yang dipilih
       _focusAyah(ayahNumber);

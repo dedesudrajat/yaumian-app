@@ -110,7 +110,9 @@ class Tajweed {
     // Daftar karakter khusus yang menandakan tajweed
     final Map<String, TajweedRule> specialChars = {
       'ّ': TajweedRule.ghunna, // Tasydid (untuk ghunnah)
-      'ْ': TajweedRule.qalqala, // Sukun (untuk qalqala jika setelah huruf qalqala)
+      'ْ':
+          TajweedRule
+              .qalqala, // Sukun (untuk qalqala jika setelah huruf qalqala)
       'ٓ': TajweedRule.madd, // Tanda madd
       'آ': TajweedRule.madd, // Alif dengan madd
       'ً': TajweedRule.ghunna, // Tanwin fathah
